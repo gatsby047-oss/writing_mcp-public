@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Next.js build outputs
+.next/
+out/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+coverage/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.err.log
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Vitest
+test-results/
+
+# Runtime data (generated locally, never commit)
+.aiws-data/

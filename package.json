@@ -1,0 +1,32 @@
+{
+  "name": "ai-persona-writing-studio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Interview-facing minimal MVP for a Chinese-first AI writing workbench with persona memory and a learn-from-acceptance loop.",
+  "scripts": {
+    "setup": "npm --prefix ui install",
+    "dev": "npm --prefix ui run dev",
+    "build": "npm --prefix ui run build",
+    "start": "npm --prefix ui run start",
+    "lint": "npm --prefix ui run lint",
+    "test": "npm --prefix ui run test",
+    "test:run": "npm --prefix ui run test:run"
+  },
+  "keywords": [
+    "ai-writing",
+    "nextjs",
+    "persona",
+    "personalization",
+    "writing-workbench"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
