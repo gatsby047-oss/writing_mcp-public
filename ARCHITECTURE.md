@@ -17,7 +17,7 @@ In other words, this is meant to show shipping judgment, not just coding volume.
 
 ## Long-Term Vision
 
-This project is not only a short demo artifact. It is an early exploration toward a self-learning, evolving writing tool for building a creator's personal IP.
+This project is not only a short demo artifact. It is an early exploration toward a self-learning, evolving writing tool that helps users build a recognizable personal IP.
 
 The current public version captures the first practical step of that idea:
 

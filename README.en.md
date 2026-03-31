@@ -18,9 +18,9 @@
 
 ## Project Philosophy
 
-This is an early exploration toward a self-learning writing tool for building a creator's personal IP.
+This is an early exploration toward a self-learning writing tool that helps users build a recognizable personal IP.
 
-It came out of personal experimentation and multiple rounds of iteration. The goal is not only to generate text, but to accumulate preference memory, reinforce stylistic identity, and gradually become a more personal creative partner over time.
+It came out of personal experimentation and multiple rounds of iteration. The goal is not only to generate text, but to accumulate preference memory, help users build a more recognizable creative identity, and gradually become a more personal creative partner over time.
 
 What I wanted to validate was not "one more wrapper around a model endpoint," but a more product-shaped question:
 
