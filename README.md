@@ -1,90 +1,94 @@
-# AI Persona Writing Studio
+# AI 个性化写作工作台
 
-AI Persona Writing Studio is a Chinese-first writing workbench built as a fast, interview-facing MVP.
+[中文](./README.md) | [English](./README.en.md)
 
-It focuses on one narrow but complete product loop:
+一个中文优先、面向面试展示的 AI 写作 MVP。
 
-1. persistent writing preferences
-2. profile-aware prompting
-3. a learn-from-acceptance feedback loop
-4. outline-to-draft generation for chapter writing
+它聚焦一条很窄但完整的产品闭环：
 
-The result is a focused app where AI suggestions become more aligned with the user's style over time, instead of behaving like a stateless text box on every request.
+1. 记住用户写作偏好
+2. 在生成时注入用户画像
+3. 从“采纳结果”里继续学习
+4. 从大纲走到章节正文
 
-## 30-Second Takeaway
-
-This is a minimal but complete AI writing MVP built to explore one core idea: an AI writing tool should remember the writer, learn from accepted output, and gradually evolve toward a more personal creative partner.
-
-- product angle: personalization instead of one-off generation
-- MVP scope: write -> generate -> accept -> learn -> generate again
-- engineering angle: local-first, low setup cost, explainable behavior, stable demo path
+这个项目的核心不是“再包一层模型调用”，而是验证一个更具体的判断：
+AI 写作工具不该每次都像第一次见你，它应该逐步记住作者，并越来越像一个更贴近个人风格的创作搭档。
 
 ![Workbench overview](./docs/overview.png)
 
-## Project Philosophy
+## 30 秒看懂
 
-This project is an early exploration toward a self-learning, evolving writing tool for building a creator's personal IP.
+这是一个最小但完整的写作产品切片，用来探索一个核心想法：
+“AI 写作工具应该记住作者、从采纳行为里学习，并逐步朝更个人化的创作伙伴演进。”
 
-It grew out of personal experimentation and multiple rounds of iteration. The long-term goal is not only to generate text, but to gradually accumulate preference memory, reinforce stylistic identity, and become a more personal creative partner over time.
+- 产品角度：重点不是一次性生成，而是个性化
+- MVP 范围：写作 -> 生成 -> 采纳 -> 学习 -> 再生成
+- 工程角度：本地优先、部署轻、行为可解释、演示路径稳定
 
-## What This Repo Contains
+## 项目理念
 
-This repository is the public Web edition of the project.
+这是迈向“自学习进化的个人 IP 写作工具”的初步探索项目，来自个人尝试与多次迭代。
 
-- The main product lives in `ui/`, built with Next.js App Router.
-- The UI includes `Bookshelf`, `Workbench`, `Profile`, and `Settings`.
-- The interface defaults to Simplified Chinese and includes an English UI toggle for interviewer demos.
-- The server side is implemented with Next.js API routes plus local JSON storage.
-- `mock` mode is available for stable demos without real model credentials.
+长期目标不只是生成文本，而是持续积累偏好记忆、强化风格身份，并逐步成长为更懂用户的创作工具。
 
-## For Interviewers
+## 这个仓库包含什么
 
-This repo is intentionally framed as a minimal vibecoding-style MVP:
+这是项目的公开 Web 版仓库。
 
-- one clear user problem: generic AI writing tools do not remember the writer
-- one visible product thesis: accepted output should improve later generations
-- one longer-term direction: evolve toward a self-learning personal-IP writing tool
-- one end-to-end demo loop: write -> generate -> accept -> learn -> generate again
-- minimal infrastructure: no auth, no database, no cloud dependency required for the core demo
-- stable execution: `mock` mode keeps the product usable even without API keys
+- 主体产品位于 `ui/`，基于 Next.js App Router
+- UI 包含 `Bookshelf`、`Workbench`、`Profile`、`Settings`
+- 仓库首页说明默认中文，但应用界面内置中英切换
+- 服务端使用 Next.js API routes + 本地 JSON 存储
+- 提供 `mock` 模式，方便没有真实模型密钥时稳定演示
 
-The point is not feature breadth. The point is showing product judgment, scope control, fast iteration, and a working personalization loop.
+## 给面试官看的重点
 
-## If You Only Review Three Things
+这个仓库刻意被收敛成一个 vibecoding 风格的最小 MVP：
 
-If you are scanning this repository quickly, start here:
+- 一个明确问题：通用 AI 写作工具不会记住作者
+- 一个可见主张：被采纳的输出应该改进后续生成
+- 一个长期方向：演化为自学习的个人 IP 写作工具
+- 一条完整演示链路：写作 -> 生成 -> 采纳 -> 学习 -> 再生成
+- 极简基础设施：无登录、无数据库、无云端依赖也能演示主流程
+- 稳定演示模式：`mock` 模式保证没有 API key 也可完整跑通
 
-1. [README.md](./README.md): the product thesis, MVP scope, and demo framing
-2. [ARCHITECTURE.md](./ARCHITECTURE.md): the learning loop, storage choices, and evolution path
-3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md): the shortest path to understanding the product flow in action
+这里要展示的不是功能堆叠，而是产品判断、范围控制、快速迭代，以及一个真正跑通的个性化闭环。
 
-## Why This Is A Good Minimal MVP
+## 如果只看三个地方
 
-- It solves a real interaction problem instead of only wrapping a model endpoint.
-- It keeps the system understandable enough to demo in a few minutes.
-- It includes both product UI and server-side behavior, so it feels like a real shipped slice.
-- It is small enough to build quickly, but opinionated enough to discuss trade-offs seriously.
-- It leaves room for a bigger personal-tooling vision without pretending the first version is already the final product.
+如果你只是快速扫一遍仓库，建议先看：
 
-## Current Status
+1. [README.md](./README.md)：产品主张、MVP 范围、演示定位
+2. [ARCHITECTURE.md](./ARCHITECTURE.md)：学习闭环、存储策略、后续演化路径
+3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)：最短演示路径
 
-This repo is a Web app with API routes, not a standalone MCP server.
+## 为什么说它是一个合格的最小 MVP
 
-- You can run it as a local writing studio today.
-- The current API surface is designed so an MCP layer can be added later.
-- The planned MCP direction is to expose profile-aware generation and learning as tools on top of the same core services, rather than rebuilding the logic twice.
+- 它解决的是一个真实交互问题，而不只是封装模型接口
+- 它足够小，能在几分钟内讲清楚
+- 它同时包含 UI 和服务端行为，因此更像一个真正交付过的产品切片
+- 它足够轻，适合快速搭建；也足够有观点，适合认真讨论取舍
+- 它给更长期的个人写作工具愿景留了空间，但不假装第一版已经完成全部目标
 
-## Core Features
+## 当前状态
 
-- Persistent user profile with controllable persona injection
-- Auto-learning from accepted AI output, plus manual learning input
-- Chinese-first interface with switchable English UI copy for demos and interviews
-- Project-level style overlay for genre, tone, audience, and writing constraints
-- Multi-round outline workflow before full chapter generation
-- Local QC checks for draft quality and banned phrases
-- Dual provider mode: `mock` and `openai-compatible`
+这个仓库目前是一个 Web App，不是独立 MCP Server。
 
-## Tech Stack
+- 现在可以直接作为本地写作工作台运行
+- 当前 API 结构已经为后续封装 MCP 留出了空间
+- 更合理的后续方向是：在现有服务层之上暴露“画像感知生成”和“学习”工具，而不是重复实现两套逻辑
+
+## 核心功能
+
+- 持久化用户画像，可控制是否参与生成
+- 接受 AI 结果后的自动学习，以及手动投喂学习
+- 中文优先界面，并支持切换英文 UI
+- 项目级风格覆盖：题材、基调、读者、约束
+- 多轮大纲澄清，再进入章节生成
+- 本地 QC 检查与禁用表达控制
+- 双模式运行：`mock` 与 `openai-compatible`
+
+## 技术栈
 
 - Next.js 14
 - React 18
@@ -93,67 +97,67 @@ This repo is a Web app with API routes, not a standalone MCP server.
 - Tailwind CSS
 - Vitest
 
-## Local Development
+## 本地开发
 
-From the repository root:
+在仓库根目录执行：
 
 ```bash
 npm run setup
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000).
+然后打开 [http://localhost:3000](http://localhost:3000)。
 
-## Production Check
+## 生产检查
 
 ```bash
 npm run build
 npm run start
 ```
 
-## Tests
+## 测试
 
-From the repository root:
+在仓库根目录执行：
 
 ```bash
 npm run test:run
 ```
 
-Or from `ui/`:
+或者进入 `ui/`：
 
 ```bash
 npm test
 npm run test:run
 ```
 
-## Environment Variables
+## 环境变量
 
-Real model calls are optional. Without `ui/.env`, the app runs in `mock` mode automatically.
+真实模型调用是可选的。没有 `ui/.env` 时，应用会自动运行在 `mock` 模式。
 
-To enable an OpenAI-compatible provider:
+如果要接入 OpenAI 兼容接口：
 
-1. Copy `ui/.env.example` to `ui/.env`
-2. Fill in your own credentials
+1. 复制 `ui/.env.example` 为 `ui/.env`
+2. 填入你自己的凭据
 
-Default example values use a DashScope-compatible endpoint, but the code path is designed for OpenAI-compatible chat-completions APIs in general.
+示例默认使用 DashScope 风格端点，但整体代码路径面向的是更通用的 OpenAI-compatible chat completions 接口。
 
-## Project Structure
+## 项目结构
 
 ```text
 .
 |- ui/
-|  |- src/app/               # App Router pages and API routes
-|  |- src/components/        # Product UI
-|  |- src/lib/               # shared types, client calls, QC, state
-|  \- src/lib/server/        # AI runtime, profile service, local storage
-|- DEMO_SCRIPT.md            # short product walkthrough
-|- INSTALL.md                # quick start
-\- ARCHITECTURE.md           # design notes and roadmap
+|  |- src/app/               # App Router 页面与 API routes
+|  |- src/components/        # 产品 UI
+|  |- src/lib/               # 类型、客户端请求、QC、状态管理
+|  \- src/lib/server/        # AI 运行时、画像服务、本地存储
+|- DEMO_SCRIPT.md            # 简短演示脚本
+|- INSTALL.md                # 快速安装说明
+\- ARCHITECTURE.md           # 设计说明与路线图
 ```
 
-## API Surface
+## API 面
 
-The Web app exposes a small local API:
+Web 应用当前暴露了一组本地 API：
 
 - `GET/POST /api/settings/model`
 - `GET/POST /api/profile`
@@ -164,15 +168,15 @@ The Web app exposes a small local API:
 - `POST /api/ai/analyze`
 - `POST /api/ai/outline`
 
-## Design Notes
+## 设计说明
 
-- Project data is persisted in browser storage with Zustand.
-- Model settings and the learned user profile are stored in local JSON files under `ui/.aiws-data`.
-- The product is intentionally narrow so the personalization loop stays understandable.
-- The learning layer uses heuristics rather than a training pipeline, which keeps the demo explainable and fast to run locally.
-- The scope is deliberately MVP-sized: one strong loop, low setup cost, and clear demoability.
+- 项目数据通过 Zustand 持久化在浏览器存储中
+- 模型设置与已学习的用户画像保存在 `ui/.aiws-data` 本地 JSON 文件中
+- 产品范围刻意收窄，方便把个性化闭环讲清楚
+- 学习层采用启发式策略，而非训练流水线，以保证本地可运行、可解释、可演示
+- 整体范围保持在 MVP 级别：一条强闭环、低搭建成本、清晰可演示
 
-More detail:
+更多说明：
 
 - [INSTALL.md](./INSTALL.md)
 - [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)
@@ -180,4 +184,4 @@ More detail:
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+MIT，详见 [LICENSE](./LICENSE)。
