@@ -22,23 +22,23 @@ This repository explores a self-learning writing tool that helps users build a r
 
 It is based on multiple rounds of practical experimentation and iteration. The goal is not only to generate text, but to accumulate preference memory, help users build a more recognizable creative identity, and gradually become a more personal creative partner over time.
 
-The focus is not "one more wrapper around a model endpoint," but a more product-shaped set of questions:
+The current version is not centered on "one more wrapper around a model endpoint," but on a more product-shaped set of questions:
 
 - would writers value a tool that progressively remembers their style
 - should accepted output become a durable signal for future generations
 - can that loop be demonstrated clearly without heavy infrastructure
 
-## Project Value And Discussion Points
+## Current Version Characteristics
 
-- product judgment takes priority over feature accumulation
-- the scope is intentionally narrow, so the full loop can be explained quickly
-- it includes UI, server behavior, and persistence, so it reads like a real shipped slice rather than a static mock
-- it keeps a clear evolution path without overstating what version one can do
-- it creates room for trade-off discussion: why auth, databases, collaboration, a complex CMS, and a training pipeline are still out of scope
+- product judgment comes before feature expansion
+- the core loop stays compact but complete
+- the repository covers UI, server behavior, and local persistence together
+- the evolution path stays clear while current limits remain explicit
+- future expansion remains possible without introducing platform overhead too early
 
-## What This Public Version Contains
+## Repository Contents
 
-This repository is the public Web edition of the project, organized for public review, collaboration, and quick demos.
+This repository contains the public Web edition of the project for public review, collaboration, and quick demos.
 
 - The main product lives in `ui/`, built with Next.js App Router.
 - The app includes `Bookshelf`, `Workbench`, `Profile`, and `Settings`.
@@ -47,7 +47,7 @@ This repository is the public Web edition of the project, organized for public r
 - The backend uses Next.js API routes plus local JSON storage for easy local execution and explanation.
 - A `mock` mode keeps the demo stable even without real model credentials.
 
-## The Core MVP Loop
+## Core Loop
 
 1. The user creates a project and writes inside a chapter.
 2. The system clarifies the outline before jumping into generation.
@@ -55,18 +55,18 @@ This repository is the public Web edition of the project, organized for public r
 4. Once the user accepts useful output, the system extracts preference signals from the before/after delta.
 5. The user profile is updated and reused in later prompts.
 
-This loop is the center of the current version and the main reason the scope stays compact.
+This loop is the center of the current version and the main reason the overall scope stays compact.
 
-## Recommended Reading Order
+## Related Documents
 
 1. [README.md](./README.md)  
-   Start with the product thesis, MVP boundary, and positioning.
+   Product thesis, MVP boundary, and repository positioning.
 2. [ARCHITECTURE.md](./ARCHITECTURE.md)  
-   Then review the learning loop, storage decisions, heuristic trade-offs, and evolution path.
+   Learning loop, storage decisions, heuristic trade-offs, and evolution path.
 3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)  
-   Finally read the 5-8 minute walkthrough to understand how the product is meant to be shown.
+   A 5-8 minute walkthrough and the main points to surface during a demo.
 
-## Scope Decisions
+## Scope Boundary
 
 ### Included In The Current Version
 
@@ -87,7 +87,7 @@ This loop is the center of the current version and the main reason the scope sta
 - a real model training pipeline
 - a broader platform layer
 
-The current goal is not to behave like a platform v1. It is to make one product belief legible, testable, and easy to discuss.
+At this stage, the priority is validating the core product loop, so account systems, databases, and heavier platform infrastructure are intentionally deferred.
 
 ## MCP Status
 
