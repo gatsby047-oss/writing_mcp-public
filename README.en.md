@@ -2,8 +2,8 @@
 
 [中文](./README.md) | [English](./README.en.md)
 
-> A Chinese-first AI writing MVP.  
-> It does not try to win on feature breadth. It tries to validate a more specific product belief: an AI writing tool should not behave like it is meeting the writer for the first time on every prompt. It should improve through a loop of generate -> accept -> learn -> generate again.
+> A local-first AI writing workbench for long-term style formation and personal IP building.  
+> It brings persona memory, structured outlining, and learn-from-acceptance into one runnable, explainable, demoable product loop.
 
 ![Workbench overview](./docs/overview.png)
 
