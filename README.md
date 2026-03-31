@@ -11,6 +11,14 @@ It focuses on one narrow but complete product loop:
 
 The result is a focused app where AI suggestions become more aligned with the user's style over time, instead of behaving like a stateless text box on every request.
 
+## 30-Second Takeaway
+
+This is a minimal but complete AI writing MVP built to explore one core idea: an AI writing tool should remember the writer, learn from accepted output, and gradually evolve toward a more personal creative partner.
+
+- product angle: personalization instead of one-off generation
+- MVP scope: write -> generate -> accept -> learn -> generate again
+- engineering angle: local-first, low setup cost, explainable behavior, stable demo path
+
 ![Workbench overview](./docs/overview.png)
 
 ## Project Philosophy
@@ -40,6 +48,14 @@ This repo is intentionally framed as a minimal vibecoding-style MVP:
 - stable execution: `mock` mode keeps the product usable even without API keys
 
 The point is not feature breadth. The point is showing product judgment, scope control, fast iteration, and a working personalization loop.
+
+## If You Only Review Three Things
+
+If you are scanning this repository quickly, start here:
+
+1. [README.md](./README.md): the product thesis, MVP scope, and demo framing
+2. [ARCHITECTURE.md](./ARCHITECTURE.md): the learning loop, storage choices, and evolution path
+3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md): the shortest path to understanding the product flow in action
 
 ## Why This Is A Good Minimal MVP
 
