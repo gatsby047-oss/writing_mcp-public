@@ -15,6 +15,18 @@ That means:
 
 In other words, this is meant to show shipping judgment, not just coding volume.
 
+## Long-Term Vision
+
+This project is not only a short demo artifact. It is an early exploration toward a self-learning, evolving writing tool for building a creator's personal IP.
+
+The current public version captures the first practical step of that idea:
+
+- remember writing preferences
+- learn from accepted output
+- reflect those signals back into future generations
+
+It also reflects the way the project was built in practice: through personal experimentation, repeated simplification, and multiple rounds of iteration rather than a single big-design pass.
+
 ## Product Summary
 
 AI Persona Writing Studio is a focused writing workbench with a personalization loop at its core:

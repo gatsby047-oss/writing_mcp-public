@@ -13,6 +13,12 @@ The result is a focused app where AI suggestions become more aligned with the us
 
 ![Workbench overview](./docs/overview.png)
 
+## Project Philosophy
+
+This project is an early exploration toward a self-learning, evolving writing tool for building a creator's personal IP.
+
+It grew out of personal experimentation and multiple rounds of iteration. The long-term goal is not only to generate text, but to gradually accumulate preference memory, reinforce stylistic identity, and become a more personal creative partner over time.
+
 ## What This Repo Contains
 
 This repository is the public Web edition of the project.
@@ -28,6 +34,7 @@ This repo is intentionally framed as a minimal vibecoding-style MVP:
 
 - one clear user problem: generic AI writing tools do not remember the writer
 - one visible product thesis: accepted output should improve later generations
+- one longer-term direction: evolve toward a self-learning personal-IP writing tool
 - one end-to-end demo loop: write -> generate -> accept -> learn -> generate again
 - minimal infrastructure: no auth, no database, no cloud dependency required for the core demo
 - stable execution: `mock` mode keeps the product usable even without API keys
@@ -40,6 +47,7 @@ The point is not feature breadth. The point is showing product judgment, scope c
 - It keeps the system understandable enough to demo in a few minutes.
 - It includes both product UI and server-side behavior, so it feels like a real shipped slice.
 - It is small enough to build quickly, but opinionated enough to discuss trade-offs seriously.
+- It leaves room for a bigger personal-tooling vision without pretending the first version is already the final product.
 
 ## Current Status
 
