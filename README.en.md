@@ -7,14 +7,16 @@
 
 ![Workbench overview](./docs/overview.png)
 
-## 30-Second Overview
+_The current public workbench breaks the previous single crowded page into five focused spaces: `Overview / Writing / Outline / Context / Review`, giving the core writing loop a clearer structure._
+
+## Project Snapshot
 
 | Dimension | Summary |
 | --- | --- |
-| Problem | Generic AI writing tools can generate text, but they usually do not really remember the writer |
-| Product thesis | Accepted output should become a reusable signal for later generations |
-| MVP scope | writing -> outline clarification -> generation -> acceptance -> learning -> generation again |
-| Current form | a local-first Web app that is stable to demo, Chinese-first, and switchable to English |
+| Project type | an AI writing MVP built around long-term style accumulation |
+| Core thesis | accepted output should feed back into later generations |
+| Core path | outline clarification -> generation -> acceptance -> learning -> generation again |
+| Current experience | a five-section workbench, local-first runtime, Chinese UI with English toggle, and stable `mock` demos |
 
 ## Project Philosophy
 
@@ -28,13 +30,13 @@ The current version is not centered on "one more wrapper around a model endpoint
 - should accepted output become a durable signal for future generations
 - can that loop be demonstrated clearly without heavy infrastructure
 
-## Current Version Characteristics
+## Visible Highlights
 
-- product judgment comes before feature expansion
-- the core loop stays compact but complete
-- the repository covers UI, server behavior, and local persistence together
-- the evolution path stays clear while current limits remain explicit
-- future expansion remains possible without introducing platform overhead too early
+- persona memory, project-level style overlays, and learn-from-acceptance form one personalization loop
+- the workbench has been redesigned into five sections to reduce the cognitive load of a single crowded page
+- local JSON storage plus `mock` mode keep setup cost low and demos stable
+- the scope stays tight while still covering UI, server behavior, and persistence end to end
+- the current version already leaves a clear path toward a future MCP tool layer
 
 ## Repository Contents
 
