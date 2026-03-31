@@ -2,91 +2,117 @@
 
 [中文](./README.md) | [English](./README.en.md)
 
-A Chinese-first, interview-facing AI writing MVP.
-
-It focuses on one narrow but complete product loop:
-
-1. persistent writing preferences
-2. profile-aware prompting
-3. a learn-from-acceptance feedback loop
-4. outline-to-draft generation for chapter writing
-
-The point is not to wrap a model endpoint one more time. The point is to validate a more specific product belief:
-an AI writing tool should remember the writer, learn from accepted output, and gradually become a more personal creative partner.
+> A Chinese-first, interview-facing AI writing MVP.  
+> It does not try to win on feature breadth. It tries to validate a more specific product belief: an AI writing tool should not behave like it is meeting the writer for the first time on every prompt. It should improve through a loop of generate -> accept -> learn -> generate again.
 
 ![Workbench overview](./docs/overview.png)
 
 ## 30-Second Takeaway
 
-This is a minimal but complete product slice built to explore one core idea:
-an AI writing tool should remember the writer, learn from accepted output, and gradually evolve toward a more personal creative partner.
-
-- product angle: personalization instead of one-off generation
-- MVP scope: write -> generate -> accept -> learn -> generate again
-- engineering angle: local-first, low setup cost, explainable behavior, stable demo path
+| Dimension | Summary |
+| --- | --- |
+| Problem | Generic AI writing tools can generate text, but they usually do not really remember the writer |
+| Product thesis | Accepted output should become a reusable signal for later generations |
+| MVP scope | writing -> outline clarification -> generation -> acceptance -> learning -> generation again |
+| Current form | a local-first Web app that is stable to demo, Chinese-first, and switchable to English |
 
 ## Project Philosophy
 
-This project is an early exploration toward a self-learning writing tool for building a creator's personal IP.
+This is an early exploration toward a self-learning writing tool for building a creator's personal IP.
 
-It grew out of personal experimentation and multiple rounds of iteration. The long-term goal is not only to generate text, but to accumulate preference memory, reinforce stylistic identity, and become a more personal creative partner over time.
+It came out of personal experimentation and multiple rounds of iteration. The goal is not only to generate text, but to accumulate preference memory, reinforce stylistic identity, and gradually become a more personal creative partner over time.
 
-## What This Repo Contains
+What I wanted to validate was not "one more wrapper around a model endpoint," but a more product-shaped question:
 
-This repository is the public Web edition of the project.
+- would writers value a tool that progressively remembers their style
+- should accepted output become a durable signal for future generations
+- can that loop be demonstrated clearly without heavy infrastructure
+
+## Why This Repo Works Well In Interviews
+
+- It shows product judgment instead of feature accumulation.
+- The scope is intentionally narrow, so the full loop can be explained in minutes.
+- It includes UI, server behavior, and persistence, so it feels like a real shipped slice instead of a static mock.
+- It leaves room for a larger vision without pretending the first version already solved everything.
+- It creates room for trade-off discussion: why there is no auth, no database, no collaboration layer, no complex CMS, and no training pipeline yet.
+
+## What This Public Version Contains
+
+This repository is the public Web edition of the project, organized for interviewers, collaborators, and quick demos.
 
 - The main product lives in `ui/`, built with Next.js App Router.
-- The UI includes `Bookshelf`, `Workbench`, `Profile`, and `Settings`.
-- The repo landing page is Chinese-first, while the app UI itself supports an English toggle.
-- The server side is implemented with Next.js API routes plus local JSON storage.
-- `mock` mode is available for stable demos without real model credentials.
+- The app includes `Bookshelf`, `Workbench`, `Profile`, and `Settings`.
+- The repository landing page is Chinese-first, while the app UI supports both Chinese and English.
+- The workbench has been restructured into five clearer sections: `Overview / Writing / Outline / Context / Review`.
+- The backend uses Next.js API routes plus local JSON storage for easy local execution and explanation.
+- A `mock` mode keeps the demo stable even without real model credentials.
 
-## For Interviewers
+## The Core MVP Loop
 
-This repo is intentionally framed as a minimal vibecoding-style MVP:
+1. The user creates a project and writes inside a chapter.
+2. The system clarifies the outline before jumping into generation.
+3. AI generates draft, continuation, polish, summary, or diagnosis output.
+4. Once the user accepts useful output, the system extracts preference signals from the before/after delta.
+5. The user profile is updated and reused in later prompts.
 
-- one clear user problem: generic AI writing tools do not remember the writer
-- one visible product thesis: accepted output should improve later generations
-- one longer-term direction: evolve toward a self-learning personal-IP writing tool
-- one end-to-end demo loop: write -> generate -> accept -> learn -> generate again
-- minimal infrastructure: no auth, no database, no cloud dependency required for the core demo
-- stable execution: `mock` mode keeps the product usable even without API keys
+This loop is the center of the project and the main reason the scope is kept tight.
 
-The goal is not feature breadth. The goal is to show product judgment, scope control, fast iteration, and a working personalization loop.
+## If You Review Only Three Things
 
-## If You Only Review Three Things
+1. [README.md](./README.md)  
+   Start with the product thesis, MVP boundary, and positioning.
+2. [ARCHITECTURE.md](./ARCHITECTURE.md)  
+   Then review the learning loop, storage decisions, heuristic trade-offs, and evolution path.
+3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)  
+   Finally read the 5-8 minute walkthrough to understand how the product is meant to be shown.
 
-If you are scanning this repository quickly, start here:
+## What I Intentionally Kept
 
-1. [README.md](./README.md): product thesis, MVP scope, and demo framing
-2. [ARCHITECTURE.md](./ARCHITECTURE.md): the learning loop, storage choices, and evolution path
-3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md): the shortest path to understanding the product flow in action
+- persistent persona memory
+- learning from accepted output
+- multi-round outline clarification
+- project-level style overlays
+- local QC and banned phrase controls
+- Chinese-first UI with English toggle
+- a stable `mock` mode for demos
 
-## Why This Is A Good Minimal MVP
+## What I Intentionally Did Not Build Yet
 
-- It solves a real interaction problem instead of only wrapping a model endpoint.
-- It is understandable enough to demo in a few minutes.
-- It includes both product UI and server-side behavior, so it feels like a real shipped slice.
-- It is small enough to build quickly, but opinionated enough to discuss trade-offs seriously.
-- It leaves room for a larger personal-tooling vision without pretending the first version already solves everything.
+- authentication
+- cloud database infrastructure
+- multiplayer collaboration
+- a heavy content management backend
+- a real model training pipeline
+- a broader platform layer
 
-## Current Status
+The reason is simple: this is not trying to be a platform v1. It is trying to make one product belief legible and testable.
 
-This repo is currently a Web app, not a standalone MCP server.
+## MCP Status
 
-- You can run it today as a local writing studio.
-- The current API structure already leaves room for a future MCP layer.
-- The more sensible next step is to expose profile-aware generation and learning as tools on top of the same service layer, instead of rebuilding the logic twice.
+This repository is currently a Web app, not a standalone MCP server.
+
+That said, it already has a sensible path toward MCP:
+
+- the server logic is already separated into reusable local services
+- the API surface already covers `generate / analyze / outline / profile / learn`
+- the right next step would be exposing MCP tools on top of the same service layer, not rewriting the logic twice
+
+If I extended it in that direction, I would likely start by exposing:
+
+- `generate`
+- `generate-outline`
+- `get-profile`
+- `learn-profile`
 
 ## Core Features
 
-- Persistent user profile with controllable persona injection
-- Auto-learning from accepted AI output, plus manual learning input
-- Chinese-first interface with switchable English UI copy
-- Project-level style overlay for genre, tone, audience, and writing constraints
-- Multi-round outline workflow before full chapter generation
-- Local QC checks for draft quality and banned phrases
-- Dual provider mode: `mock` and `openai-compatible`
+- persistent user profile with controllable persona injection
+- auto-learning from accepted AI output, plus manual learning input
+- Chinese-first interface with switchable English UI
+- project-level style overlay for genre, tone, audience, and writing constraints
+- multi-round outline workflow before full chapter generation
+- local QC checks and banned phrase controls
+- dual runtime mode: `mock` and `openai-compatible`
 
 ## Tech Stack
 
@@ -108,25 +134,18 @@ npm run dev
 
 Then open [http://localhost:3000](http://localhost:3000).
 
-## Production Check
+## Build And Test
+
+Production check:
 
 ```bash
 npm run build
 npm run start
 ```
 
-## Tests
-
-From the repository root:
+Tests:
 
 ```bash
-npm run test:run
-```
-
-Or from `ui/`:
-
-```bash
-npm test
 npm run test:run
 ```
 
@@ -139,7 +158,7 @@ To enable an OpenAI-compatible provider:
 1. Copy `ui/.env.example` to `ui/.env`
 2. Fill in your own credentials
 
-The example values use a DashScope-style endpoint, but the implementation is designed for OpenAI-compatible chat completions APIs in general.
+The example uses a DashScope-style endpoint, but the implementation is designed around OpenAI-compatible chat completions APIs in general.
 
 ## Project Structure
 
@@ -148,16 +167,16 @@ The example values use a DashScope-style endpoint, but the implementation is des
 |- ui/
 |  |- src/app/               # App Router pages and API routes
 |  |- src/components/        # Product UI
-|  |- src/lib/               # shared types, client calls, QC, state
+|  |- src/lib/               # types, state, QC, client requests
 |  \- src/lib/server/        # AI runtime, profile service, local storage
-|- DEMO_SCRIPT.md            # short product walkthrough
-|- INSTALL.md                # quick start
-\- ARCHITECTURE.md           # design notes and roadmap
+|- DEMO_SCRIPT.md            # 5-8 minute walkthrough
+|- INSTALL.md                # setup notes
+\- ARCHITECTURE.md           # design notes and evolution path
 ```
 
 ## API Surface
 
-The Web app exposes a small local API:
+The current Web app exposes a small but complete local API:
 
 - `GET/POST /api/settings/model`
 - `GET/POST /api/profile`
@@ -168,15 +187,7 @@ The Web app exposes a small local API:
 - `POST /api/ai/analyze`
 - `POST /api/ai/outline`
 
-## Design Notes
-
-- Project data is persisted in browser storage with Zustand.
-- Model settings and the learned user profile are stored in local JSON files under `ui/.aiws-data`.
-- The product is intentionally narrow so the personalization loop stays understandable.
-- The learning layer uses heuristics rather than a training pipeline, which keeps the demo explainable and fast to run locally.
-- The scope is deliberately MVP-sized: one strong loop, low setup cost, and clear demoability.
-
-More detail:
+## More Detail
 
 - [INSTALL.md](./INSTALL.md)
 - [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)
