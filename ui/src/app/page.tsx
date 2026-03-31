@@ -23,20 +23,28 @@ import type {
   OutlineAnswer,
   OutlineQuestion,
   OutlineQuestionRound,
+  ProviderMode,
   UserProfile,
 } from "@/lib/modeling";
 import ProfileView from "@/components/ProfileView";
 import BookshelfView from "@/components/BookshelfView";
 import SettingsView from "@/components/SettingsView";
 import WorkbenchView from "@/components/WorkbenchView";
+import { providerModeLabel, uiText, type UILanguage } from "@/lib/i18n";
 import { useAIWSStore } from "@/lib/state";
 
-function LoadingScreen() {
+function LoadingScreen({ language }: { language: UILanguage }) {
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <div className="rounded-[28px] border border-stone-200 bg-white/90 px-6 py-5 text-center shadow-[0_18px_36px_rgba(148,163,184,0.12)]">
         <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-[#bdd3d5] border-t-[#17324d]" />
-        <p className="text-sm text-slate-700">正在恢复你的工作台与用户画像...</p>
+        <p className="text-sm text-slate-700">
+          {uiText(
+            language,
+            "正在恢复你的工作台与用户画像...",
+            "Restoring your workspace and persona memory..."
+          )}
+        </p>
       </div>
     </div>
   );
@@ -54,6 +62,7 @@ function hasOutlineContent(outline?: {
 
 export default function Home() {
   const hasHydrated = useAIWSStore((state) => state.hasHydrated);
+  const language = useAIWSStore((state) => state.language);
   const view = useAIWSStore((state) => state.view);
   const projects = useAIWSStore((state) => state.projects);
   const currentProjectId = useAIWSStore((state) => state.currentProjectId);
@@ -77,6 +86,14 @@ export default function Home() {
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [manualSample, setManualSample] = useState("");
   const [isPending, startTransition] = useTransition();
+
+  function t(zh: string, en: string) {
+    return uiText(language, zh, en);
+  }
+
+  function withProviderStatus(zh: string, en: string, providerMode: ProviderMode) {
+    return `${t(zh, en)} ${t("模式：", "Mode: ")}${providerModeLabel(language, providerMode)}.`;
+  }
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -111,7 +128,11 @@ export default function Home() {
         setSettings(settingsPayload.settings);
       } catch (error) {
         if (cancelled) return;
-        setErrorMessage(error instanceof Error ? error.message : "初始化失败");
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : uiText(language, "初始化失败。", "Failed to initialize.")
+        );
       }
     }
 
@@ -122,7 +143,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [hasHydrated]);
+  }, [hasHydrated, language]);
 
   const currentProject = useMemo(
     () => projects.find((project) => project.id === currentProjectId) ?? null,
@@ -185,10 +206,7 @@ export default function Home() {
     });
 
     setOutlineAnswers((currentAnswers) => {
-      const nextAnswers =
-        mode === "append"
-          ? [...currentAnswers]
-          : [];
+      const nextAnswers = mode === "append" ? [...currentAnswers] : [];
 
       for (const item of questions) {
         const existing = currentAnswers.find((answer) => answer.id === item.id);
@@ -218,7 +236,12 @@ export default function Home() {
     if (!currentChapter) return;
 
     if (action === "write-from-outline" && !hasOutlineContent(currentChapter.outline)) {
-      setErrorMessage("先补齐当前章节大纲，再按大纲生成正文。");
+      setErrorMessage(
+        t(
+          "先补齐当前章节大纲，再按大纲生成正文。",
+          "Complete the chapter outline first, then generate from the outline."
+        )
+      );
       setStatusMessage(null);
       return;
     }
@@ -234,9 +257,15 @@ export default function Home() {
       });
       setPreviewResult(result);
       setAnalysisResult(null);
-      setStatusMessage(`${result.summary}，当前使用 ${result.providerMode} 模式。`);
+      setStatusMessage(
+        withProviderStatus(
+          "预览已生成，可选择应用到工作台。",
+          "Preview is ready and can be applied to the workspace.",
+          result.providerMode
+        )
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "生成失败");
+      setErrorMessage(error instanceof Error ? error.message : t("生成失败。", "Generation failed."));
     } finally {
       setBusyAction(null);
     }
@@ -254,9 +283,15 @@ export default function Home() {
         context: projectContext,
       });
       setAnalysisResult(result);
-      setStatusMessage(`${result.summary}，当前使用 ${result.providerMode} 模式。`);
+      setStatusMessage(
+        withProviderStatus(
+          "章节诊断已完成。",
+          "Chapter diagnosis is ready.",
+          result.providerMode
+        )
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "诊断失败");
+      setErrorMessage(error instanceof Error ? error.message : t("诊断失败。", "Diagnosis failed."));
     } finally {
       setBusyAction(null);
     }
@@ -281,9 +316,19 @@ export default function Home() {
         guidance: result.guidance,
       });
       setOutlineResult(null);
-      setStatusMessage(`${result.summary}，当前使用 ${result.providerMode} 模式。`);
+      setStatusMessage(
+        withProviderStatus(
+          "澄清问题已准备好。",
+          "Clarifying questions are ready.",
+          result.providerMode
+        )
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "生成澄清问题失败");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : t("生成澄清问题失败。", "Failed to generate clarifying questions.")
+      );
     } finally {
       setBusyAction(null);
     }
@@ -300,7 +345,12 @@ export default function Home() {
 
     const answeredCount = outlineAnswers.filter((item) => item.answer.trim()).length;
     if (answeredCount < Math.min(2, outlineAnswers.length)) {
-      setErrorMessage("先回答至少两个问题，再进入下一轮追问。");
+      setErrorMessage(
+        t(
+          "先回答至少两个问题，再进入下一轮追问。",
+          "Answer at least two questions before requesting follow-up prompts."
+        )
+      );
       setStatusMessage(null);
       return;
     }
@@ -323,9 +373,17 @@ export default function Home() {
         guidance: result.guidance,
       });
       setOutlineResult(null);
-      setStatusMessage(`${result.summary}，当前使用 ${result.providerMode} 模式。`);
+      setStatusMessage(
+        withProviderStatus(
+          "追问已准备好。",
+          "Follow-up questions are ready.",
+          result.providerMode
+        )
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "生成追问失败");
+      setErrorMessage(
+        error instanceof Error ? error.message : t("生成追问失败。", "Failed to generate follow-up questions.")
+      );
     } finally {
       setBusyAction(null);
     }
@@ -333,14 +391,24 @@ export default function Home() {
 
   async function handleGenerateOutline() {
     if (!currentChapter || outlineAnswers.length === 0) {
-      setErrorMessage("先获取澄清问题，再根据回答生成大纲。");
+      setErrorMessage(
+        t(
+          "先获取澄清问题，再根据回答生成大纲。",
+          "Request clarifying questions first, then generate the outline from the answers."
+        )
+      );
       setStatusMessage(null);
       return;
     }
 
     const answeredCount = outlineAnswers.filter((item) => item.answer.trim()).length;
     if (answeredCount < Math.min(2, outlineAnswers.length)) {
-      setErrorMessage("先回答至少两个澄清问题，再生成大纲。");
+      setErrorMessage(
+        t(
+          "先回答至少两个澄清问题，再生成大纲。",
+          "Answer at least two clarifying questions before generating the outline."
+        )
+      );
       setStatusMessage(null);
       return;
     }
@@ -355,9 +423,17 @@ export default function Home() {
         answers: outlineAnswers,
       });
       setOutlineResult(result);
-      setStatusMessage(`${result.summary}，当前使用 ${result.providerMode} 模式。`);
+      setStatusMessage(
+        withProviderStatus(
+          "大纲预览已生成。",
+          "Outline preview is ready.",
+          result.providerMode
+        )
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "生成大纲失败");
+      setErrorMessage(
+        error instanceof Error ? error.message : t("生成大纲失败。", "Failed to generate the outline.")
+      );
     } finally {
       setBusyAction(null);
     }
@@ -370,7 +446,7 @@ export default function Home() {
       summary: outlineResult.chapterSummary || currentChapter.summary,
       outline: outlineResult.outline,
     });
-    setStatusMessage("大纲已应用到当前章节。");
+    setStatusMessage(t("大纲已应用到当前章节。", "Outline applied to the current chapter."));
     setErrorMessage(null);
   }
 
@@ -395,7 +471,7 @@ export default function Home() {
       updateChapter(currentChapter.id, { summary: previewResult.previewText.trim() });
     }
 
-    setStatusMessage("预览结果已应用。");
+    setStatusMessage(t("预览结果已应用。", "Preview applied to the workspace."));
 
     const source =
       sourceOverride ??
@@ -407,17 +483,16 @@ export default function Home() {
           source,
           beforeText:
             previewResult.action === "summarize" ? currentChapter.summary : previousContent,
-          afterText:
-            previewResult.action === "summarize"
-              ? previewResult.previewText
-              : nextContent,
+          afterText: previewResult.action === "summarize" ? previewResult.previewText : nextContent,
         });
         setProfile(learned.profile);
         setStatusMessage(
-          `预览结果已应用，并已更新用户画像：${learned.learned[0] ?? "已学习新的风格样本"}`
+          t("预览结果已应用，画像也已更新。", "Preview applied and persona memory updated.")
         );
       } catch (error) {
-        setErrorMessage(error instanceof Error ? error.message : "画像学习失败");
+        setErrorMessage(
+          error instanceof Error ? error.message : t("画像学习失败。", "Persona learning failed.")
+        );
       }
     }
   }
@@ -435,10 +510,12 @@ export default function Home() {
         afterText: trimmed,
       });
       setProfile(result.profile);
-      setStatusMessage(`画像已更新：${result.learned.join("、")}`);
+      setStatusMessage(t("画像已更新。", "Persona memory updated."));
       setManualSample("");
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "手动学习失败");
+      setErrorMessage(
+        error instanceof Error ? error.message : t("手动学习失败。", "Manual learning failed.")
+      );
     } finally {
       setBusyAction(null);
     }
@@ -451,9 +528,11 @@ export default function Home() {
     try {
       const payload = await undoLearning();
       setProfile(payload.profile);
-      setStatusMessage("已撤销最近一次学习。");
+      setStatusMessage(
+        t("已撤销最近一次学习事件。", "Reverted the latest learning event.")
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "撤销失败");
+      setErrorMessage(error instanceof Error ? error.message : t("撤销失败。", "Undo failed."));
     } finally {
       setBusyAction(null);
     }
@@ -466,21 +545,24 @@ export default function Home() {
     try {
       const payload = await saveModelSettings(nextSettings);
       setSettings(payload.settings);
-      setStatusMessage("模型设置已保存。");
+      setStatusMessage(t("模型设置已保存。", "Model settings saved."));
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "保存设置失败");
+      setErrorMessage(
+        error instanceof Error ? error.message : t("保存设置失败。", "Failed to save settings.")
+      );
     } finally {
       setBusyAction(null);
     }
   }
 
   if (!hasHydrated || !profile || !settings) {
-    return <LoadingScreen />;
+    return <LoadingScreen language={language} />;
   }
 
   if (view === "profile") {
     return (
       <ProfileView
+        language={language}
         profile={profile}
         currentChapter={currentChapter}
         busyAction={busyAction}
@@ -511,12 +593,13 @@ export default function Home() {
   }
 
   if (view === "bookshelf") {
-    return <BookshelfView />;
+    return <BookshelfView language={language} />;
   }
 
   if (view === "settings") {
     return (
       <SettingsView
+        language={language}
         profile={profile}
         settings={settings}
         busyAction={busyAction}
@@ -540,6 +623,7 @@ export default function Home() {
 
   return (
     <WorkbenchView
+      language={language}
       profile={profile}
       settings={settings}
       currentProject={currentProject}

@@ -10,16 +10,19 @@ import type {
   Project,
   ProjectStyleOverlay,
 } from "@/lib/modeling";
+import { DEFAULT_UI_LANGUAGE, type UILanguage } from "@/lib/i18n";
 import { countWords } from "@/lib/qc";
 import { now, createId } from "@/lib/utils";
 
 interface AIWSState {
   hasHydrated: boolean;
+  language: UILanguage;
   view: AppView;
   projects: Project[];
   currentProjectId: string | null;
   currentChapterId: string | null;
   setHasHydrated: (value: boolean) => void;
+  setLanguage: (language: UILanguage) => void;
   setView: (view: AppView) => void;
   addProject: (input: { name: string; genre?: string; tone?: string; audience?: string }) => void;
   setCurrentProject: (projectId: string) => void;
@@ -46,7 +49,7 @@ interface AIWSState {
 
 type PersistedState = Pick<
   AIWSState,
-  "view" | "projects" | "currentProjectId" | "currentChapterId"
+  "language" | "view" | "projects" | "currentProjectId" | "currentChapterId"
 >;
 
 const STORAGE_KEY = "aiws-public-v1";
@@ -191,11 +194,13 @@ export const useAIWSStore = create<AIWSState>()(
   persist(
     (set, get) => ({
       hasHydrated: false,
+      language: DEFAULT_UI_LANGUAGE,
       view: "workbench",
       projects: [],
       currentProjectId: null,
       currentChapterId: null,
       setHasHydrated: (value) => set({ hasHydrated: value }),
+      setLanguage: (language) => set({ language }),
       setView: (view) => set({ view }),
       addProject: (input) => {
         const project = createProject(input);
@@ -512,9 +517,10 @@ export const useAIWSStore = create<AIWSState>()(
     }),
     {
       name: STORAGE_KEY,
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       partialize: (state): PersistedState => ({
+        language: state.language,
         view: state.view,
         projects: state.projects,
         currentProjectId: state.currentProjectId,
@@ -540,6 +546,7 @@ export const useAIWSStore = create<AIWSState>()(
             ? raw.currentChapterId
             : currentProject?.chapters[0]?.id ?? null;
         return {
+          language: raw.language === "en" ? "en" : DEFAULT_UI_LANGUAGE,
           view: raw.view ?? "workbench",
           projects,
           currentProjectId,

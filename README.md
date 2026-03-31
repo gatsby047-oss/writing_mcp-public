@@ -33,6 +33,7 @@ This repository is the public Web edition of the project.
 
 - The main product lives in `ui/`, built with Next.js App Router.
 - The UI includes `Bookshelf`, `Workbench`, `Profile`, and `Settings`.
+- The interface defaults to Simplified Chinese and includes an English UI toggle for interviewer demos.
 - The server side is implemented with Next.js API routes plus local JSON storage.
 - `mock` mode is available for stable demos without real model credentials.
 
@@ -77,6 +78,7 @@ This repo is a Web app with API routes, not a standalone MCP server.
 
 - Persistent user profile with controllable persona injection
 - Auto-learning from accepted AI output, plus manual learning input
+- Chinese-first interface with switchable English UI copy for demos and interviews
 - Project-level style overlay for genre, tone, audience, and writing constraints
 - Multi-round outline workflow before full chapter generation
 - Local QC checks for draft quality and banned phrases
