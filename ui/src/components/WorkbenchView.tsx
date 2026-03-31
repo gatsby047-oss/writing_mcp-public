@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import {
+  ArrowRight,
   BrainCircuit,
   CheckCheck,
   FilePlus2,
@@ -91,6 +92,7 @@ function flowStep(index: number, title: string, active: boolean, language: UILan
 }
 
 type ChapterShape = Project["chapters"][number];
+type WorkspaceSection = "overview" | "writing" | "outline" | "context" | "review";
 
 export default function WorkbenchView(props: {
   language: UILanguage;
@@ -186,6 +188,7 @@ export default function WorkbenchView(props: {
   });
   const [foreshadowText, setForeshadowText] = useState("");
   const [bannedPhrase, setBannedPhrase] = useState("");
+  const [activeSection, setActiveSection] = useState<WorkspaceSection>("overview");
 
   const qc = useMemo(() => {
     if (!currentChapter || !currentProject) return null;
@@ -368,7 +371,54 @@ export default function WorkbenchView(props: {
     t("接受结果让画像学习", "Accept output and let the persona learn"),
   ];
 
-  const activeFlowStep = outlineResult ? 3 : outlineQuestions.length > 0 ? 2 : 1;
+  const activeFlowStep =
+    previewResult || analysisResult
+      ? 4
+      : outlineResult || currentChapter?.content.trim()
+        ? 3
+        : outlineQuestions.length > 0
+          ? 2
+          : 1;
+  const suggestedSection: WorkspaceSection = previewResult || analysisResult
+    ? "review"
+    : outlineQuestions.length > 0 || outlineResult
+      ? "outline"
+      : currentChapter?.content.trim()
+        ? "writing"
+        : "overview";
+  const workspaceSections = [
+    {
+      id: "overview" as const,
+      index: "01",
+      label: t("总览", "Overview"),
+      description: t("先看流程、状态与下一步建议", "See flow, state, and the recommended next step"),
+    },
+    {
+      id: "writing" as const,
+      index: "02",
+      label: t("写作", "Writing"),
+      description: t("专注项目、章节与正文编辑", "Focus on project, chapter, and manuscript editing"),
+    },
+    {
+      id: "outline" as const,
+      index: "03",
+      label: t("大纲", "Outline"),
+      description: t("先澄清，再生成结构化大纲", "Clarify first, then generate a structured outline"),
+    },
+    {
+      id: "context" as const,
+      index: "04",
+      label: t("上下文", "Context"),
+      description: t("管理风格偏移、角色和伏笔", "Tune style context, characters, and foreshadowing"),
+    },
+    {
+      id: "review" as const,
+      index: "05",
+      label: t("质检", "Review"),
+      description: t("查看诊断、预览和 QC", "Inspect diagnosis, previews, and QC"),
+    },
+  ];
+  const suggestedSectionLabel = workspaceSections.find((item) => item.id === suggestedSection)?.label;
 
   if (!currentProject || !currentChapter) {
     return (
@@ -550,6 +600,140 @@ export default function WorkbenchView(props: {
       tone: "text-[#17324d]",
     },
   ];
+  const chapterWordCount = countWords(currentChapter.content);
+  const openForeshadowCount = currentProject.foreshadows.filter((item) => item.status === "open").length;
+  const activeSectionMeta = (() => {
+    switch (activeSection) {
+      case "writing":
+        return {
+          eyebrow: t("写作工作区", "Writing workspace"),
+          title: t("把注意力压缩到一章正文与一组明确操作", "Focus on one chapter draft and a small set of clear actions"),
+          description: t(
+            "这里保留项目切换、章节管理和正文编辑，避免让大纲、角色、质检同时打断写作节奏。",
+            "This area keeps project switching, chapter management, and manuscript editing together without outline, context, or review constantly interrupting the drafting rhythm."
+          ),
+          highlights: [
+            t(`${chapterWordCount} / ${currentChapter.targetWordCount} 字`, `${chapterWordCount} / ${currentChapter.targetWordCount} chars`),
+            currentOutlineReady ? t("已具备可用大纲", "Outline ready") : t("建议先补足大纲", "Outline recommended"),
+            t(`${currentProject.chapters.length} 个章节`, `${currentProject.chapters.length} chapters`),
+          ],
+        };
+      case "outline":
+        return {
+          eyebrow: t("大纲工作区", "Outline workspace"),
+          title: t("先把意图说清，再让系统生成结构", "Clarify intent first, then let the system structure the chapter"),
+          description: t(
+            "这一层只处理问题澄清、追问和结构化大纲，不把正文编辑混在一起，方便你判断剧情骨架是否稳。",
+            "This layer is only for clarification, follow-up questions, and structured outlining, so you can judge the chapter skeleton before drafting."
+          ),
+          highlights: [
+            outlineQuestions.length > 0
+              ? t(`已回答 ${answeredQuestionCount} / ${outlineQuestions.length}`, `${answeredQuestionCount} / ${outlineQuestions.length} answered`)
+              : t("尚未开始澄清", "Clarification not started"),
+            outlineRound === "follow-up" ? t("当前在追问轮次", "Currently in follow-up round") : t("当前在首轮澄清", "Currently in the initial round"),
+            outlineResult ? t("已有可应用大纲", "Outline ready to apply") : t("结构尚未落稿", "Structure not finalized yet"),
+          ],
+        };
+      case "context":
+        return {
+          eyebrow: t("上下文工作区", "Context workspace"),
+          title: t("把长期风格、角色和伏笔放进同一层维护", "Maintain long-term style, characters, and foreshadowing in one layer"),
+          description: t(
+            "这里是轻量级上下文面板，负责把真正影响生成质量的信息留住，而不是堆成一个复杂后台。",
+            "This is a lightweight context layer that keeps only the inputs that truly shape output quality instead of turning into a heavy admin backend."
+          ),
+          highlights: [
+            profile.enabled ? t("长期画像已开启", "Persona enabled") : t("长期画像未开启", "Persona disabled"),
+            t(`${currentProject.characters.length} 个角色`, `${currentProject.characters.length} characters`),
+            t(`${openForeshadowCount} 条未回收伏笔`, `${openForeshadowCount} open foreshadowing`),
+          ],
+        };
+      case "review":
+        return {
+          eyebrow: t("验收工作区", "Review workspace"),
+          title: t("把预览、诊断和 QC 收口到最后一层验收", "Consolidate preview, diagnosis, and QC into the final acceptance layer"),
+          description: t(
+            "生成结果出来之后，再集中看推荐动作、章节诊断和规则质检，避免写作过程中被反馈噪音反复打断。",
+            "Once output exists, review recommended actions, diagnosis, and QC together here instead of letting feedback noise interrupt drafting."
+          ),
+          highlights: [
+            qc ? t(`QC ${qc.score} 分`, `QC ${qc.score}`) : t("暂无 QC 结果", "No QC result yet"),
+            previewResult ? t("已有预览结果", "Preview ready") : t("尚无预览结果", "No preview yet"),
+            analysisResult ? t("已有章节诊断", "Diagnosis ready") : t("尚无章节诊断", "No diagnosis yet"),
+          ],
+        };
+      case "overview":
+      default:
+        return {
+          eyebrow: t("总览工作区", "Overview workspace"),
+          title: t("先判断这章卡在哪一步，再进入对应分区执行", "See where the chapter is stuck before diving into the right workspace"),
+          description: t(
+            "总览不承担具体编辑，只负责看清当前状态、瓶颈和下一步。这能让整个 MVP 更像产品调度台，而不是一页堆满功能的后台。",
+            "Overview is not for direct editing. It exists to surface current state, bottlenecks, and the next move so the MVP feels like a real command deck instead of a single overloaded admin page."
+          ),
+          highlights: [
+            t(`当前项目：${currentProject.name}`, `Project: ${currentProject.name}`),
+            t(`当前章节：${currentChapter.title}`, `Chapter: ${currentChapter.title}`),
+            t(`章节状态：${chapterStatusLabel(language, currentChapter.status)}`, `Status: ${chapterStatusLabel(language, currentChapter.status)}`),
+          ],
+        };
+    }
+  })();
+  const overviewCards = [
+    {
+      id: "writing" as const,
+      eyebrow: t("正文", "Draft"),
+      title: t("进入当前章节正文", "Open the current chapter draft"),
+      value: t(`${chapterWordCount} / ${currentChapter.targetWordCount} 字`, `${chapterWordCount} / ${currentChapter.targetWordCount} chars`),
+      detail: t("专注章节切换、项目范围和正文编辑。", "Focus on chapter switching, project scope, and manuscript editing."),
+    },
+    {
+      id: "outline" as const,
+      eyebrow: t("结构", "Structure"),
+      title: outlineResult
+        ? t("当前大纲已经可用", "The current outline is ready")
+        : outlineQuestions.length > 0
+          ? t("澄清正在进行中", "Clarification is in progress")
+          : t("这一章还没开始搭结构", "This chapter has not entered outlining yet"),
+      value: outlineResult
+        ? t("可应用并继续写作", "Ready to apply and draft")
+        : outlineQuestions.length > 0
+          ? t(`已回答 ${answeredQuestionCount} / ${outlineQuestions.length}`, `${answeredQuestionCount} / ${outlineQuestions.length} answered`)
+          : t("建议先开始澄清", "Start clarification first"),
+      detail: t("把关键限制讲清楚，再生成能落到正文里的结构。", "Clarify the important constraints before generating a draftable structure."),
+    },
+    {
+      id: "context" as const,
+      eyebrow: t("上下文", "Context"),
+      title: t("统一维护画像、角色与伏笔", "Maintain persona, characters, and foreshadowing together"),
+      value: t(`${currentProject.characters.length} 角色 / ${openForeshadowCount} 未回收伏笔`, `${currentProject.characters.length} characters / ${openForeshadowCount} open foreshadowing`),
+      detail: t("保留会长期影响模型输出的关键信号。", "Keep the signals that shape output quality over time."),
+    },
+    {
+      id: "review" as const,
+      eyebrow: t("验收", "Review"),
+      title: t("把结果预览、诊断与 QC 放到最后统一检查", "Review previews, diagnosis, and QC in one final pass"),
+      value: previewResult || analysisResult
+        ? t("已有待验收结果", "Outputs are ready for review")
+        : t("可先生成预览或跑诊断", "Generate a preview or run diagnosis first"),
+      detail: t("最后一层只负责判断是否应用、学习或继续改写。", "The final layer is only for deciding whether to apply, learn, or revise."),
+    },
+  ];
+  const showOverviewDashboard = activeSection === "overview";
+  const showLeftColumn = activeSection === "writing" || activeSection === "outline" || activeSection === "context";
+  const showMiddleColumn = activeSection === "writing";
+  const showRightColumn = activeSection === "outline" || activeSection === "context" || activeSection === "review";
+  const showProjectDirectory = activeSection === "writing";
+  const showPersona = activeSection === "outline" || activeSection === "context";
+  const showOutline = activeSection === "outline";
+  const showCollaboration = activeSection === "outline" || activeSection === "review";
+  const showContextPanel = activeSection === "context";
+  const showStoryPanel = activeSection === "context";
+  const showQcPanel = activeSection === "review";
+  const workspaceGridClass =
+    activeSection === "review"
+      ? "grid gap-5 xl:grid-cols-1"
+      : "grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]";
 
   return (
     <div className="space-y-5">
@@ -600,9 +784,188 @@ export default function WorkbenchView(props: {
         </div>
       ) : null}
 
-      <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)_410px]">
+      <section className="rounded-[30px] border border-stone-200 bg-[rgba(255,255,255,0.88)] p-5 shadow-[0_20px_40px_rgba(148,163,184,0.12)] backdrop-blur-xl">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500">
+              {t("工作区导航", "Workspace navigation")}
+            </p>
+            <h3 className="mt-3 font-serif text-3xl text-slate-900">
+              {t("把工作流拆成更清晰的五个分区", "Split the workflow into five clearer sections")}
+            </h3>
+            <p className="mt-3 text-sm leading-7 text-stone-600">
+              {t(
+                "从总览进入，再按需切到写作、大纲、上下文或质检。每次只打开当前最需要的一层信息，不再让整页面板同时压到你面前。",
+                "Start from Overview, then move into Writing, Outline, Context, or Review. Each step reveals only the layer you need right now instead of pushing every panel onto the screen at once."
+              )}
+            </p>
+          </div>
+          {activeSection !== suggestedSection ? (
+            <button
+              onClick={() => setActiveSection(suggestedSection)}
+              className="inline-flex items-center gap-2 rounded-[22px] border border-stone-200 bg-[#fffdf8] px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-stone-300 hover:bg-white"
+            >
+              <span>
+                {t("前往推荐分区：", "Go to suggested section: ")}
+                {suggestedSectionLabel}
+              </span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          ) : null}
+        </div>
+
+        <div className="mt-5 grid gap-3 lg:grid-cols-5">
+          {workspaceSections.map((section) => {
+            const active = activeSection === section.id;
+            const suggested = suggestedSection === section.id;
+            return (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={`rounded-[26px] border px-4 py-4 text-left transition ${
+                  active
+                    ? "border-[#17324d] bg-[linear-gradient(145deg,#17324d,#284d6b)] text-white shadow-[0_16px_30px_rgba(23,50,77,0.18)]"
+                    : suggested
+                      ? "border-[#d8b58e] bg-[#fff8ee] text-slate-900 shadow-[0_12px_24px_rgba(217,161,91,0.12)]"
+                      : "border-stone-200 bg-white text-slate-900 hover:border-stone-300 hover:bg-stone-50"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className={`text-[11px] uppercase tracking-[0.22em] ${active ? "text-white/70" : "text-stone-500"}`}>
+                    {section.index}
+                  </span>
+                  {suggested ? (
+                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium ${active ? "bg-white/14 text-white/80" : "bg-[#f4e4cf] text-[#8f6036]"}`}>
+                      {t("推荐", "Suggested")}
+                    </span>
+                  ) : null}
+                </div>
+                <p className={`mt-3 text-sm font-semibold ${active ? "text-white" : "text-slate-900"}`}>
+                  {section.label}
+                </p>
+                <p className={`mt-2 text-xs leading-6 ${active ? "text-white/75" : "text-stone-500"}`}>
+                  {section.description}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="rounded-[30px] border border-stone-200 bg-[rgba(255,252,247,0.92)] p-5 shadow-[0_18px_36px_rgba(191,145,84,0.12)] backdrop-blur-xl">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_360px]">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500">
+              {activeSectionMeta.eyebrow}
+            </p>
+            <h3 className="mt-3 font-serif text-3xl text-slate-900">
+              {activeSectionMeta.title}
+            </h3>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+              {activeSectionMeta.description}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {activeSectionMeta.highlights.map((item) => (
+                <span key={item}>{chip(item)}</span>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-[26px] border border-[#e8d1b6] bg-[#fff6eb] p-4 shadow-[0_14px_28px_rgba(188,127,69,0.08)]">
+            <p className="text-xs uppercase tracking-[0.24em] text-[#8f6036]">
+              {t("当前建议动作", "Recommended move")}
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-900">
+              {recommendedAction.title}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-stone-600">
+              {recommendedAction.detail}
+            </p>
+            {activeSection !== suggestedSection ? (
+              <button
+                onClick={() => setActiveSection(suggestedSection)}
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#8f6036] transition hover:text-[#744a28]"
+              >
+                <span>
+                  {t("切到推荐分区", "Jump to the suggested section")}
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      {showOverviewDashboard ? (
+        <section className="rounded-[30px] border border-stone-200 bg-[rgba(255,255,255,0.88)] p-5 shadow-[0_20px_40px_rgba(148,163,184,0.12)] backdrop-blur-xl">
+          <div className="flex flex-col gap-2">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-stone-500">
+              {t("总览卡片", "Overview cards")}
+            </p>
+            <h3 className="font-serif text-3xl text-slate-900">
+              {t("把下一步决策压缩成四张可执行卡片", "Compress the next move into four executable cards")}
+            </h3>
+            <p className="text-sm leading-7 text-stone-600">
+              {t(
+                "总览页只负责决策，不再直接堆编辑器。你先判断当前阶段，再进入对应分区执行，这样页面层级会更清楚，也更适合给面试官展示产品思路。",
+                "Overview is now only for decision-making instead of hosting the editor itself. Judge the current stage first, then enter the matching workspace, which makes the page hierarchy clearer and easier to present to interviewers."
+              )}
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-4 xl:grid-cols-4">
+            {overviewCards.map((card) => {
+              const highlighted = suggestedSection === card.id;
+              return (
+                <article
+                  key={card.id}
+                  className={`rounded-[28px] border p-4 transition ${
+                    highlighted
+                      ? "border-[#d8b58e] bg-[#fff8ee] shadow-[0_16px_30px_rgba(217,161,91,0.14)]"
+                      : "border-stone-200 bg-white shadow-[0_16px_30px_rgba(148,163,184,0.08)]"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.22em] text-stone-500">
+                        {card.eyebrow}
+                      </p>
+                      <p className="mt-2 text-sm font-semibold text-slate-900">
+                        {card.title}
+                      </p>
+                    </div>
+                    {highlighted ? (
+                      <span className="rounded-full bg-[#f4e4cf] px-2.5 py-1 text-[10px] font-medium text-[#8f6036]">
+                        {t("推荐", "Suggested")}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-4 text-lg font-semibold text-[#17324d]">
+                    {card.value}
+                  </p>
+                  <p className="mt-2 text-sm leading-7 text-stone-600">
+                    {card.detail}
+                  </p>
+                  <button
+                    onClick={() => setActiveSection(card.id)}
+                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-[#17324d]"
+                  >
+                    <span>
+                      {t("进入该分区", "Open this workspace")}
+                    </span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {!showOverviewDashboard ? (
+      <div className={workspaceGridClass}>
+        {showLeftColumn ? (
         <div className="space-y-5">
-          {panel(
+          {showProjectDirectory ? panel(
             t("项目目录", "Project index"),
             t(
               "把当前写作限制在一个项目和一个章节里，更容易保持上下文稳定。",
@@ -680,9 +1043,9 @@ export default function WorkbenchView(props: {
               </div>
             </div>
           )
-          )}
+          ) : null}
 
-          {panel(
+          {showPersona ? panel(
             t("长期风格画像", "Long-term persona"),
             t(
               "这些信号会进入 AI 提示词，帮助系统持续贴近你的写作习惯。",
@@ -702,9 +1065,11 @@ export default function WorkbenchView(props: {
               </div>
             </div>
           )
-          )}
+          ) : null}
         </div>
+        ) : null}
 
+        {showMiddleColumn ? (
         <div className="space-y-5">
           {panel(
             t("稿纸与结构", "Draft and structure"),
@@ -868,9 +1233,11 @@ export default function WorkbenchView(props: {
           )
           )}
         </div>
+        ) : null}
 
+        {showRightColumn ? (
         <div className="space-y-5">
-          {panel(
+          {showOutline ? panel(
             t("大纲策划", "Outline planning"),
             t(
               "先和系统补齐关键约束，再生成这一章的结构化大纲。",
@@ -1010,9 +1377,9 @@ export default function WorkbenchView(props: {
               ) : null}
             </div>
           )
-          )}
+          ) : null}
 
-          {panel(
+          {showCollaboration ? panel(
             t("AI 协作", "AI collaboration"),
             t(
               "大纲稳定后再生成正文，会比直接盲写更稳。",
@@ -1137,9 +1504,9 @@ export default function WorkbenchView(props: {
               ) : null}
             </div>
           )
-          )}
+          ) : null}
 
-          {panel(
+          {showContextPanel ? panel(
             t("项目上下文微调", "Project context tuning"),
             t(
               "这些信息会和用户画像一起进入模型，决定每次输出的偏移方向。",
@@ -1219,9 +1586,9 @@ export default function WorkbenchView(props: {
               </label>
             </div>
           )
-          )}
+          ) : null}
 
-          {panel(
+          {showStoryPanel ? panel(
             t("角色与伏笔", "Characters and foreshadowing"),
             t(
               "保留最有价值的轻量上下文，不把工作台做成复杂后台。",
@@ -1353,9 +1720,9 @@ export default function WorkbenchView(props: {
               </div>
             </div>
           )
-          )}
+          ) : null}
 
-          {panel(
+          {showQcPanel ? panel(
             t("QC 与禁用表达", "QC and banned phrases"),
             t(
               "基础规则质检仍然保留，避免生成内容越写越散。",
@@ -1425,9 +1792,11 @@ export default function WorkbenchView(props: {
               ) : null}
             </div>
           )
-          )}
+          ) : null}
         </div>
+        ) : null}
       </div>
+      ) : null}
     </div>
   );
 }
