@@ -2,7 +2,7 @@
 
 This document supplements [README.md](README.md) with implementation details, design trade-offs, and roadmap notes.
 
-## Interview Framing
+## Repository Framing
 
 This repository is intentionally optimized as a small but complete MVP rather than a broad platform.
 
@@ -13,7 +13,7 @@ That means:
 - visible user value in the first demo session
 - enough implementation depth to discuss engineering choices honestly
 
-In other words, this is meant to show shipping judgment, not just coding volume.
+In other words, the repository is designed to foreground shipping judgment, not just coding volume.
 
 ## Long-Term Vision
 
@@ -142,7 +142,7 @@ The current architecture is compatible with that future direction because the se
 
 That would allow external agents to call the same persona layer used by the Web app.
 
-## If Extended Further
+## Potential Extensions
 
 Near-term ideas:
 

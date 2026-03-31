@@ -18,23 +18,23 @@
 
 ## Project Philosophy
 
-This is an early exploration toward a self-learning writing tool that helps users build a recognizable personal IP.
+This repository explores a self-learning writing tool that helps users build a recognizable personal IP.
 
-It came out of personal experimentation and multiple rounds of iteration. The goal is not only to generate text, but to accumulate preference memory, help users build a more recognizable creative identity, and gradually become a more personal creative partner over time.
+It is based on multiple rounds of practical experimentation and iteration. The goal is not only to generate text, but to accumulate preference memory, help users build a more recognizable creative identity, and gradually become a more personal creative partner over time.
 
-What I wanted to validate was not "one more wrapper around a model endpoint," but a more product-shaped question:
+The focus is not "one more wrapper around a model endpoint," but a more product-shaped set of questions:
 
 - would writers value a tool that progressively remembers their style
 - should accepted output become a durable signal for future generations
 - can that loop be demonstrated clearly without heavy infrastructure
 
-## Why This Repo Works Well In Interviews
+## Project Value And Discussion Points
 
-- It shows product judgment instead of feature accumulation.
-- The scope is intentionally narrow, so the full loop can be explained in minutes.
-- It includes UI, server behavior, and persistence, so it feels like a real shipped slice instead of a static mock.
-- It leaves room for a larger vision without pretending the first version already solved everything.
-- It creates room for trade-off discussion: why there is no auth, no database, no collaboration layer, no complex CMS, and no training pipeline yet.
+- product judgment takes priority over feature accumulation
+- the scope is intentionally narrow, so the full loop can be explained quickly
+- it includes UI, server behavior, and persistence, so it reads like a real shipped slice rather than a static mock
+- it keeps a clear evolution path without overstating what version one can do
+- it creates room for trade-off discussion: why auth, databases, collaboration, a complex CMS, and a training pipeline are still out of scope
 
 ## What This Public Version Contains
 
@@ -55,9 +55,9 @@ This repository is the public Web edition of the project, organized for intervie
 4. Once the user accepts useful output, the system extracts preference signals from the before/after delta.
 5. The user profile is updated and reused in later prompts.
 
-This loop is the center of the project and the main reason the scope is kept tight.
+This loop is the center of the current version and the main reason the scope stays compact.
 
-## If You Review Only Three Things
+## Recommended Reading Order
 
 1. [README.md](./README.md)  
    Start with the product thesis, MVP boundary, and positioning.
@@ -66,7 +66,9 @@ This loop is the center of the project and the main reason the scope is kept tig
 3. [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)  
    Finally read the 5-8 minute walkthrough to understand how the product is meant to be shown.
 
-## What I Intentionally Kept
+## Scope Decisions
+
+### Included In The Current Version
 
 - persistent persona memory
 - learning from accepted output
@@ -76,7 +78,7 @@ This loop is the center of the project and the main reason the scope is kept tig
 - Chinese-first UI with English toggle
 - a stable `mock` mode for demos
 
-## What I Intentionally Did Not Build Yet
+### Deliberately Out Of Scope For Now
 
 - authentication
 - cloud database infrastructure
@@ -85,7 +87,7 @@ This loop is the center of the project and the main reason the scope is kept tig
 - a real model training pipeline
 - a broader platform layer
 
-The reason is simple: this is not trying to be a platform v1. It is trying to make one product belief legible and testable.
+The current goal is not to behave like a platform v1. It is to make one product belief legible, testable, and easy to discuss.
 
 ## MCP Status
 
@@ -97,7 +99,7 @@ That said, it already has a sensible path toward MCP:
 - the API surface already covers `generate / analyze / outline / profile / learn`
 - the right next step would be exposing MCP tools on top of the same service layer, not rewriting the logic twice
 
-If I extended it in that direction, I would likely start by exposing:
+If the project evolves in that direction, likely MCP-facing tools would include:
 
 - `generate`
 - `generate-outline`

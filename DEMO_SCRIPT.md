@@ -1,84 +1,83 @@
-# Product Demo Walkthrough
+# Product Demo Outline
 
-This is a short 5-8 minute walkthrough for showing the product to other developers, recruiters, or collaborators.
+This document provides a concise 5-8 minute walkthrough for presenting the product to interviewers, collaborators, or technical reviewers.
 
-## 1. Open With Positioning
+## 1. Positioning
 
-Say:
+Key message:
 
 > This is a Chinese-first AI writing workbench focused on personalization.  
 > The key idea is not just generation, but that the system learns from accepted output and gradually builds a reusable writing profile.
 
 ## 2. Show The Four Views
 
-Walk through:
+What to show:
 
 1. `Bookshelf`
 2. `Workbench`
 3. `Profile`
 4. `Settings`
 
-Say:
+Key point:
 
-> I intentionally kept the product narrow so the main loop stays obvious: write, ask AI for help, accept or reject, update the profile, and generate again with better alignment.
+> The product stays intentionally narrow so the main loop remains easy to understand: write, ask AI for help, accept or reject, update the profile, and generate again with better alignment.
 
 ## 3. Create Or Open A Project
 
-In `Workbench`:
+What to show in `Workbench`:
 
 1. Create a new project
 2. Set genre, tone, and audience
-3. Point out that this is the project-level style overlay
+3. Point out the project-level style overlay
 
-Say:
+Key point:
 
-> There are two layers of personalization here.  
-> One is the long-term user profile, and the other is the per-project style overlay for the current writing task.
+> The product uses two layers of personalization: a long-term user profile and a per-project style overlay for the current writing task.
 
 ## 4. Write A Small Draft
 
-Type a short paragraph in the chapter editor.
+What to show:
 
-Then point to:
-
+- a short paragraph in the chapter editor
 - chapter summary
 - outline fields
-- lightweight context like characters, foreshadows, and banned phrases
+- lightweight context such as characters, foreshadows, and banned phrases
 
-Say:
+Key point:
 
-> I kept only the context objects that most directly improve writing quality and prompt control, instead of turning the product into a heavy CMS.
+> The workbench keeps only the context objects that most directly improve writing quality and prompt control instead of becoming a heavy CMS.
 
 ## 5. Trigger AI
 
-Run:
+Suggested actions:
 
 1. `Polish` or `Continue`
 2. optionally `Chapter diagnosis`
 
-Point out:
+What to point out:
 
 - current provider mode
 - whether persona is injected
 - preview before apply
 
-Say:
+Key point:
 
-> The model layer supports both `mock` mode and an OpenAI-compatible mode.  
-> `mock` mode makes the app stable to demo even without live credentials.
+> The model layer supports both `mock` mode and an OpenAI-compatible mode. `mock` mode keeps the app stable to demo even without live credentials.
 
 ## 6. Accept The Result
 
-Click apply.
+What to show:
 
-If auto-learning is enabled, explain:
+- click apply
+- if auto-learning is enabled, show the resulting learning event
 
-> Accepting this result creates a learning event.  
-> The system compares before and after text, infers preference signals, and updates the user profile.
+Key point:
+
+> Accepting a result creates a learning event. The system compares before and after text, infers preference signals, and updates the user profile.
 
 ## 7. Open Profile
 
-In `Profile` show:
+What to show in `Profile`:
 
 - style fingerprint
 - preference signals
@@ -86,32 +85,30 @@ In `Profile` show:
 - manual learning input
 - undo last learning
 
-Say:
+Key point:
 
-> The learning system is inspectable and controllable.  
-> I wanted the memory layer to feel visible, not like a black box.
+> The learning system is inspectable and controllable, so the memory layer remains visible rather than acting like a black box.
 
 ## 8. Show Settings
 
-In `Settings` show:
+What to show in `Settings`:
 
 - `mock` vs `openai-compatible`
 - persona toggle
 - auto-learning toggle
 
-Say:
+Key point:
 
-> I separated "use persona" from "auto-learn" on purpose.  
-> That makes the system easier to reason about and easier to demo.
+> Persona usage and auto-learning are intentionally separated, which makes the system easier to reason about and easier to demonstrate.
 
 ## 9. Close With Architecture
 
-Say:
+Key point:
 
-> The frontend stores project data locally for reliability.  
-> The server stores model settings and the user profile in local JSON files so API routes can read and update them consistently.  
-> The API surface is intentionally small: settings, profile, learning, generate, analyze, and outline.
+> The frontend stores project data locally for reliability. The server stores model settings and the user profile in local JSON files so API routes can read and update them consistently. The API surface stays intentionally small: settings, profile, learning, generate, analyze, and outline.
 
-## 10. Suggested Closing Line
+## 10. Closing Direction
 
-> If I extended this further, I would add better prompt evaluation, stronger learning confidence signals, and an MCP tool layer on top of the same persona services.
+Suggested closing focus:
+
+> Likely next steps include stronger prompt evaluation, better confidence signals for learning events, and an MCP tool layer on top of the same persona services.
