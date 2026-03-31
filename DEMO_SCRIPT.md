@@ -1,6 +1,6 @@
 # Product Demo Outline
 
-This document provides a concise 5-8 minute walkthrough for presenting the product to interviewers, collaborators, or technical reviewers.
+This document provides a concise 5-8 minute walkthrough for presenting the product in a short review, collaboration, or demo session.
 
 ## 1. Positioning
 

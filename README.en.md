@@ -2,12 +2,12 @@
 
 [中文](./README.md) | [English](./README.en.md)
 
-> A Chinese-first, interview-facing AI writing MVP.  
+> A Chinese-first AI writing MVP.  
 > It does not try to win on feature breadth. It tries to validate a more specific product belief: an AI writing tool should not behave like it is meeting the writer for the first time on every prompt. It should improve through a loop of generate -> accept -> learn -> generate again.
 
 ![Workbench overview](./docs/overview.png)
 
-## 30-Second Takeaway
+## 30-Second Overview
 
 | Dimension | Summary |
 | --- | --- |
@@ -38,7 +38,7 @@ The focus is not "one more wrapper around a model endpoint," but a more product-
 
 ## What This Public Version Contains
 
-This repository is the public Web edition of the project, organized for interviewers, collaborators, and quick demos.
+This repository is the public Web edition of the project, organized for public review, collaboration, and quick demos.
 
 - The main product lives in `ui/`, built with Next.js App Router.
 - The app includes `Bookshelf`, `Workbench`, `Profile`, and `Settings`.

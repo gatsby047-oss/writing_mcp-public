@@ -88,7 +88,7 @@ Why this shape:
 - no database required for local demos
 - stable behavior across app reloads
 - easy to inspect and reset during development
-- much lower setup friction for an interview-facing MVP
+- much lower setup friction for a compact local-first MVP
 
 ## API Design
 
